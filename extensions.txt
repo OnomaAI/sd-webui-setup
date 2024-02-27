@@ -1,9 +1,4 @@
-https://github.com/aria1th/webui-model-uploader
-https://github.com/aria1th/stable-diffusion-webui-two-shot
 https://github.com/Mikubill/sd-webui-controlnet.git
-https://github.com/hako-mikan/sd-webui-lora-block-weight.git
-https://github.com/huchenlei/sd-webui-openpose-editor.git
 https://github.com/opparco/stable-diffusion-webui-composable-lora
 https://github.com/aria1th/sd-civitai-browser
 https://github.com/ArtVentureX/sd-webui-agent-scheduler
-https://github.com/vladmandic/sd-extension-system-info
