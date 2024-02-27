@@ -1,10 +1,8 @@
 # clone https://github.com/AUTOMATIC1111/stable-diffusion-webui
-git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui
+git clone https://github.com/aria1th/stable-diffusion-webui
 cd stable-diffusion-webui
 # switch branch to origin/dev
-git checkout origin/dev
-# match to commit https://github.com/AUTOMATIC1111/stable-diffusion-webui/commit/ad266d795e08f8316e2a60566513f7115b7407d5
-
+git checkout hypertile-xyz
 # find python command to create venv
 # from python3.11 to python3.10, else, use python3 
 # set 'python_command' to available python version
