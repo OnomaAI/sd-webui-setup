@@ -1,1 +1,1 @@
-export COMMANDLINE_ARGS="--no-download-sd-model --port 9052 --xformers --opt-sdp-no-mem-attention --opt-channelslast --no-half-vae --device-id 0 --share --enable-insecure-extension-access --api"
+export COMMANDLINE_ARGS="--opt-sdp-no-mem-attention --gradio-auth whitesnow:cutefox --api --enable-insecure-extension-access --no-half-vae --port 9050 --listen"
