@@ -1,4 +1,5 @@
-https://github.com/Mikubill/sd-webui-controlnet.git
-https://github.com/opparco/stable-diffusion-webui-composable-lora
-https://github.com/aria1th/sd-civitai-browser
+https://github.com/aria1th/webui-model-uploader
+https://github.com/Mikubill/sd-webui-controlnet
+https://github.com/aria1th/sd-webui-regional-prompter
 https://github.com/ArtVentureX/sd-webui-agent-scheduler
+https://github.com/vladmandic/sd-extension-system-info

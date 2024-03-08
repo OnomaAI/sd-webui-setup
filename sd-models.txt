@@ -1,1 +1,1 @@
-https://civitai.com/api/download/models/28562 anylora.safetensors
+https://civitai.com/api/download/models/173330 line_library.safetensors

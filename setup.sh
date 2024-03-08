@@ -1,8 +1,10 @@
 # clone https://github.com/AUTOMATIC1111/stable-diffusion-webui
-git clone https://github.com/aria1th/stable-diffusion-webui
+git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui
 cd stable-diffusion-webui
 # switch branch to origin/dev
-git checkout hypertile-xyz
+git checkout origin/master
+# match to commit https://github.com/AUTOMATIC1111/stable-diffusion-webui/commit/bef51aed032c0aaa5cfd80445bc4cf0d85b408b5
+git reset --hard bef51aed032c0aaa5cfd80445bc4cf0d85b408b5
 # find python command to create venv
 # from python3.11 to python3.10, else, use python3 
 # set 'python_command' to available python version
@@ -41,7 +43,6 @@ done < ../../extensions.txt
 # finally
 cd ..
 # now at stable-diffusion-webui/
-
 # download models to stable-diffusion-webui/models/Stable-diffusion/
 # read from sd-models.txt 
 # <url> <optional_model_name>
@@ -56,6 +57,28 @@ while read -r line; do
         wget -O models/Stable-diffusion/${ADDR[1]} ${ADDR[0]}
     fi
 done < ../sd-models.txt
+
+while read -r line; do
+    # split line into array
+    IFS=' ' read -ra ADDR <<< "$line"
+    # download model, save as <optional_model_name> if exists, else save as <url>
+    if [ -z "${ADDR[1]}" ]; then
+        wget -O models/Lora/${ADDR[0]##*/} ${ADDR[0]}
+    else
+        wget -O models/Lora/${ADDR[1]} ${ADDR[0]}
+    fi
+done < ../lora.txt
+
+while read -r line; do
+    # split line into array
+    IFS=' ' read -ra ADDR <<< "$line"
+    # download model, save as <optional_model_name> if exists, else save as <url>
+    if [ -z "${ADDR[1]}" ]; then
+        wget -O embeddings/${ADDR[0]##*/} ${ADDR[0]}
+    else
+        wget -O embeddings/${ADDR[1]} ${ADDR[0]}
+    fi
+done < ../embeddings.txt
 
 # run webui.sh
 # ./webui.sh
