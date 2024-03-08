@@ -1,44 +1,62 @@
 @echo off
+
 REM clone https://github.com/AUTOMATIC1111/stable-diffusion-webui
 git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui
 cd stable-diffusion-webui
 REM switch branch to origin/dev
-git checkout origin/dev
-REM match to commit https://github.com/AUTOMATIC1111/stable-diffusion-webui/commit/ad266d795e08f8316e2a60566513f7115b7407d5
-git checkout ad266d795e08f8316e2a60566513f7115b7407d5
-
-REM find python command to create venv
-REM from python3.11 to python3.10, else, use python3 
-REM set 'python_command' to available python version
-set python_command=python3.10
-where %python_command% >nul 2>nul || (
-    set python_command=python3
-    echo python3.10 not found, using python3
-)
+git checkout origin/master
+REM match to commit https://github.com/AUTOMATIC1111/stable-diffusion-webui/commit/bef51aed032c0aaa5cfd80445bc4cf0d85b408b5
+git reset --hard bef51aed032c0aaa5cfd80445bc4cf0d85b408b5
 
 REM extend webui-user-args.txt to at the end of webui-user.sh
 REM from ../webui-user-args.txt
 type ..\webui-user-args.txt >> webui-user.sh 
 
-echo python_cmd="%python_command%" >> webui-user.sh
-
 REM clone required repositories to stable-diffusion-webui/extensions/
 
 REM check if extensions folder exists
-if not exist "extensions" mkdir extensions
+if not exist "extensions\" mkdir extensions
 cd extensions
 
 REM clone, read from extensions.txt
-for /f "delims=" %%i in (..\..\extensions.txt) do git clone %%i
+for /F "tokens=*" %%A in (..\..\extensions.txt) do (
+    git clone %%A
+)
 
-REM finally
 cd ..
-REM now at stable-diffusion-webui/
 
+REM now at stable-diffusion-webui/
 REM download models to stable-diffusion-webui/models/Stable-diffusion/
 REM read from sd-models.txt 
 REM <url> <optional_model_name>
 
-for /f "tokens=1,*" %%i in (sd-models.txt) do (
-    REM split line into array
+for /F "tokens=1,2" %%A in (..\sd-models.txt) do (
+    REM download model, save as <optional_model_name> if exists, else save as <url>
+    if "%%B"=="" (
+        curl -o models\Stable-diffusion\%%~nxA %%A
+    ) else (
+        curl -o models\Stable-diffusion\%%B %%A
+    )
 )
+
+for /F "tokens=1,2" %%A in (..\lora.txt) do (
+    REM download model, save as <optional_model_name> if exists, else save as <url>
+    if "%%B"=="" (
+        curl -o models\Lora\%%~nxA %%A
+    ) else (
+        curl -o models\Lora\%%B %%A
+    )
+)
+
+for /F "tokens=1,2" %%A in (..\embeddings.txt) do (
+    REM download model, save as <optional_model_name> if exists, else save as <url>
+    if "%%B"=="" (
+        curl -o embeddings\%%~nxA %%A
+    ) else (
+        curl -o embeddings\%%B %%A
+    )
+)
+
+REM run webui.sh
+REM .\webui.sh
+REM then
