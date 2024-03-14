@@ -1,4 +1,7 @@
 # clone https://github.com/AUTOMATIC1111/stable-diffusion-webui
+if [ -f .env ]; then
+    export $(cat .env | xargs)
+fi
 git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui
 cd stable-diffusion-webui
 # switch branch to origin/dev
@@ -8,6 +11,7 @@ git reset --hard bef51aed032c0aaa5cfd80445bc4cf0d85b408b5
 # find python command to create venv
 # from python3.11 to python3.10, else, use python3 
 # set 'python_command' to available python version
+
 python_command=python3.10
 if ! command -v $python_command &> /dev/null
 then
@@ -58,27 +62,20 @@ while read -r line; do
     fi
 done < ../sd-models.txt
 
-while read -r line; do
-    # split line into array
-    IFS=' ' read -ra ADDR <<< "$line"
-    # download model, save as <optional_model_name> if exists, else save as <url>
-    if [ -z "${ADDR[1]}" ]; then
-        wget -O models/Lora/${ADDR[0]##*/} ${ADDR[0]}
-    else
-        wget -O models/Lora/${ADDR[1]} ${ADDR[0]}
-    fi
-done < ../lora.txt
+cd embeddings
+git clone https://onomaAI:$READ_TOKEN@huggingface.co/OnomaAI/tootoon-embedding/
 
-while read -r line; do
-    # split line into array
-    IFS=' ' read -ra ADDR <<< "$line"
-    # download model, save as <optional_model_name> if exists, else save as <url>
-    if [ -z "${ADDR[1]}" ]; then
-        wget -O embeddings/${ADDR[0]##*/} ${ADDR[0]}
-    else
-        wget -O embeddings/${ADDR[1]} ${ADDR[0]}
-    fi
-done < ../embeddings.txt
+mv tootoon-embedding/* .
+rm -rf tootoon-embedding
+
+cd ..
+cd models
+mkdir Lora
+cd Lora
+git clone https://onomaAI:$READ_TOKEN@huggingface.co/OnomaAI/tootoon-lora/
+
+mv tootoon-lora/* .
+rm -rf tootoon-lora
 
 # run webui.sh
 # ./webui.sh
