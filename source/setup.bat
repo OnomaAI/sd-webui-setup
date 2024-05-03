@@ -1,4 +1,5 @@
 @echo off
+cd /app/autobuild
 
 REM clone https://github.com/AUTOMATIC1111/stable-diffusion-webui
 git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui

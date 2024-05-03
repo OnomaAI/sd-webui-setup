@@ -1,4 +1,6 @@
 # clone https://github.com/AUTOMATIC1111/stable-diffusion-webui
+cd /app/autobuild
+READ_TOKEN=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
 if [ -f .env ]; then
     export $(cat .env | xargs)
 fi
@@ -19,6 +21,8 @@ then
     echo "python3.10 not found, using python3"
 fi
 
+echo cwd: $(pwd)
+export cwd=$(pwd)
 # create venv
 $python_command -m venv venv
 # activate venv
@@ -26,9 +30,10 @@ source venv/bin/activate
 
 # extend webui-user-args.txt to at the end of webui-user.sh
 # from ../webui-user-args.txt
-cat ../webui-user-args.txt >> webui-user.sh 
-
-cat 'python_cmd="'$python_command'"' >> webui-user.sh
+#cat ../webui-user-args.txt >> webui-user.sh 
+cat $cwd/../webui-user-args.txt >> webui-user.sh
+echo "" >> webui-user.sh
+cat $cwd/../webui-user-python.txt >> webui-user.sh
 
 # clone required repositories to stable-diffusion-webui/extensions/
 
@@ -41,11 +46,19 @@ cd extensions
 # clone, read from extensions.txt
 while read -r line; do
     git clone $line
-done < ../../extensions.txt
+done < $cwd/../extensions.txt
 
 
 # finally
-cd ..
+cd $cwd
+
+# ensure that webui.sh is executable and exists
+chmod +x webui.sh
+if [ ! -f webui.sh ]; then
+    echo "webui.sh not found"
+    exit 1
+fi
+
 # now at stable-diffusion-webui/
 # download models to stable-diffusion-webui/models/Stable-diffusion/
 # read from sd-models.txt 
@@ -60,23 +73,26 @@ while read -r line; do
     else
         wget -O models/Stable-diffusion/${ADDR[1]} ${ADDR[0]}
     fi
-done < ../sd-models.txt
+done < $cwd/../sd-models.txt
 
 cd embeddings
-git clone https://onomaAI:$READ_TOKEN@huggingface.co/OnomaAI/tootoon-embedding/
+git lfs clone https://onomaAI:$READ_TOKEN@huggingface.co/OnomaAI/tootoon-embedding/
 
 mv tootoon-embedding/* .
 rm -rf tootoon-embedding
 
-cd ..
+cd $cwd # /app/autobuild/stable-diffusion-webui
 cd models
 mkdir Lora
 cd Lora
-git clone https://onomaAI:$READ_TOKEN@huggingface.co/OnomaAI/tootoon-lora/
+git lfs clone https://onomaAI:$READ_TOKEN@huggingface.co/OnomaAI/tootoon-lora/
 
 mv tootoon-lora/* .
 rm -rf tootoon-lora
 
+cd $cwd # /app/autobuild/stable-diffusion-webui
+
+sed -i 's/can_run_as_root=0/can_run_as_root=1/' webui.sh
 # run webui.sh
-# ./webui.sh
+bash ./webui.sh -f # first run
 # then
